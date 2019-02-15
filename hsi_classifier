@@ -1,0 +1,77 @@
+---matlab---
+b=reshape(a,[145*145 220]);
+c=cell2mat(struct2cell(load('Indian_pines_corrected.mat')));
+d=reshape(c,[145*145 200]);
+e=cell2mat(struct2cell(load('Indian_pines_gt.mat')));
+f=reshape(e,[145*145 1]);
+indian_pine=[b,f];
+indian_pine_correct=[d,f];
+csvwrite('indian_pine.csv', indian_pine);
+
+
+---python---
+import pandas as pd
+import numpy as np
+from sklearn.cross_validation import train_test_split
+data=pd.read_csv('G:\junzheng\indian_pine.csv',header=None)
+column_name=[]
+for i in range(220):
+    column_name.append(i)
+
+X_train,X_test,y_train,y_test=train_test_split(data[column_name[1:221]],data[220],test_size=0.25,random_state=33)
+print(y_train.value_counts())
+print(y_test.value_counts())
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import SGDClassifier
+ss=StandardScaler()
+X_train=ss.fit_transform(X_train)
+X_test=ss.transform(X_test)
+
+lr=LogisticRegression()
+sgdc=SGDClassifier()
+lr.fit(X_train,y_train)
+lr_y_predict=lr.predict(X_test)
+sgdc.fit(X_train,y_train)
+sgdc_y_predict=sgdc.predict(X_test)
+from sklearn.metrics import classification_report
+print('Auccary of LR classifier:',lr.score(X_test,y_test))
+print(classification_report(y_test,lr_y_predict))
+print('Auccary of SGD classifier:',sgdc.score(X_test,y_test))
+print(classification_report(y_test,sgdc_y_predict))
+from sklearn.svm import LinearSVC
+lsvc=LinearSVC()
+lsvc.fit(X_train,y_train)
+lsvc_y_predict=lsvc.predict(X_test)
+print('Auccary of Linear SVC :',lsvc.score(X_test,y_test))
+print(classification_report(y_test,lsvc_y_predict))
+from sklearn.naive_bayes import MultinomialNB
+mnb=MultinomialNB()
+mnb.fit(X_train,y_train)
+mnb_y_predict=mnb.predict(X_test)
+print('Auccary of Naive Bates Classifier is :',mnb.score(X_test,y_test))
+print(classification_report(y_test,mnb_y_predict))
+from sklearn.neighbors import KNeighborsClassifier
+knc=KNeighborsClassifier()
+knc.fit(X_train,y_train)
+knc_y_predict=knc.predict(X_test)
+print('Auccary of KNeighborsClassifier is :',knc.score(X_test,y_test))
+print(classification_report(y_test,knc_y_predict))
+from sklearn.tree import DecisionTreeClassifier
+dtc=DecisionTreeClassifier()
+dtc.fit(X_train,y_train)
+dtc_y_predict=dtc.predict(X_test)
+print('Auccary of DecisionTree is :',dtc.score(X_test,y_test))
+print(classification_report(y_test,dtc_y_predict))
+from sklearn.ensemble import RandomForestClassifier
+rfc=RandomForestClassifier()
+rfc.fit(X_train,y_train)
+rfc_y_predict=rfc.predict(X_test)
+from sklearn.ensemble import GradientBoostingClassifier
+gbc=GradientBoostingClassifier()
+gbc.fit(X_train,y_train)
+gbc_y_predict=gbc.predict(X_test)
+print('Auccary of RandomForest is :',rfc.score(X_test,y_test))
+print(classification_report(y_test,rfc_y_predict))
+print('Auccary of GradientBoosting is :',gbc.score(X_test,y_test))
+print(classification_report(y_test,gbc_y_predict))
