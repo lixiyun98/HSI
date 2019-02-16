@@ -1,0 +1,4 @@
+aa=csvread('preindia.csv');
+aa=reshape(aa,145,145);
+ARM_HSI = label2color(aa,'india');
+imshow(ARM_HSI);
